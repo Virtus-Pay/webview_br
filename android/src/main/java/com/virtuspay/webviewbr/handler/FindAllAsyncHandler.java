@@ -2,6 +2,7 @@ package com.virtuspay.webviewbr.handler;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.util.Log;
 import android.webkit.WebView;
 
 import io.flutter.plugin.common.MethodCall;
@@ -24,7 +25,7 @@ public class FindAllAsyncHandler implements  WebViewHandler{
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onMethodCall(MethodCall call, final MethodChannel.Result result) {
-        if(call.method.equalsIgnoreCase("onPageFinish")){
+        if(call.method.equalsIgnoreCase("findAllAsync")){
 
             try {
                 final int matches = 0;
@@ -35,12 +36,10 @@ public class FindAllAsyncHandler implements  WebViewHandler{
                     public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
                       if (isDoneCounting) {
                             result.success(numberOfMatches);
+                            webView.setFindListener(null);
                       }
-
                     }
                 });
-
-                result.success(null);
             }catch (Exception e){
                 result.error(null,e.getMessage(),null);
             }

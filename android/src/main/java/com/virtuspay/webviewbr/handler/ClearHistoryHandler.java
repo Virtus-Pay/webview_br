@@ -9,11 +9,11 @@ import static io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import static io.flutter.plugin.common.MethodChannel.Result;
 
 
-class ClearFocuslHandler implements WebViewHandler {
+public class ClearHistoryHandler implements WebViewHandler {
     private WebViewHandler next;
     final private WebView webView;
 
-    ClearFocuslHandler(WebView webView) {
+    public ClearHistoryHandler(WebView webView) {
         this.webView = webView;
     }
 
@@ -25,11 +25,10 @@ class ClearFocuslHandler implements WebViewHandler {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onMethodCall(MethodCall call, final Result result) {
-        if(call.method.equalsIgnoreCase("clearFocus")){
+        if(call.method.equalsIgnoreCase("clearHistory")){
 
             try {
-
-                webView.clearFocus();
+                webView.clearHistory();
                 result.success(null);
 
             }catch (Exception e){

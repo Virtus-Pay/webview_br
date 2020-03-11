@@ -26,9 +26,6 @@ public class CanGoBackHandler implements WebViewHandler {
         if(call.method.equalsIgnoreCase("canGoBack")){
 
             try {
-
-
-
                 result.success(webView.canGoBack());
 
             }catch (Exception e){

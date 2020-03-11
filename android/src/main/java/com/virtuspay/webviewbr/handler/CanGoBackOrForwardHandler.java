@@ -9,11 +9,11 @@ import static io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import static io.flutter.plugin.common.MethodChannel.Result;
 
 
-class CanGoBackOrForwardHandler implements WebViewHandler {
+public class CanGoBackOrForwardHandler implements WebViewHandler {
     private WebViewHandler next;
     final private WebView webView;
 
-    CanGoBackOrForwardHandler(WebView webView) {
+    public CanGoBackOrForwardHandler(WebView webView) {
         this.webView = webView;
     }
 
@@ -28,9 +28,7 @@ class CanGoBackOrForwardHandler implements WebViewHandler {
         if(call.method.equalsIgnoreCase("canGoBackOrForward")){
 
             try {
-               ;
                 result.success( webView.canGoBackOrForward((int) call.argument("steps")));
-
             }catch (Exception e){
                 result.error(null,e.getMessage(),null);
             }

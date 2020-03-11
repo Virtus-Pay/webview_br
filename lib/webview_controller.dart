@@ -3,8 +3,14 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:webviewbr/android_webview_options.dart';
 import 'package:webviewbr/disposable.dart';
+import 'dart:convert';
 
-abstract class WebViewService implements Disposable{
+abstract class WebViewService implements Disposable {
+
+  Future<List<String>> getVisitedHistory();
+
+  void onPageFinished();
+
   Future<void> loadUrl(String url, [Map<String, String> headers]);
 
   Future<void> setOptions(AndroidWebViewOptions options);
@@ -23,6 +29,8 @@ abstract class WebViewService implements Disposable{
 
   Future<String> getUrl();
 
+  Future<String> getHtmlContent();
+
   Future<void> reload();
 
   Future<bool> hasFocus();
@@ -32,16 +40,15 @@ abstract class WebViewService implements Disposable{
   Future<void> clearHistory();
 
   Future<void> goBackOrForward(int steps);
-  
-  Future<bool> canGoBackOrForward(int steps);
 
+  Future<bool> canGoBackOrForward(int steps);
 
   Future<File> saveWebArchive(String basename, {bool autoname});
 
   Future<void> clearSslPreferences();
 
   //ver o resultado do findAllAsync
-  Future<void> findAllAsync(String pattern);
+  Future<int> findAllAsync(String pattern);
 
   Future<void> clearView();
 
@@ -96,9 +103,17 @@ abstract class WebViewService implements Disposable{
 }
 
 class WebViewController implements WebViewService {
-   MethodChannel _methodChannel;
+  MethodChannel _methodChannel;
 
-  WebViewController(this._methodChannel);
+
+  WebViewController(this._methodChannel){
+
+    _methodChannel.setMethodCallHandler((call) async {
+      if(call.method == "onPageFinished"){
+        print(call.arguments);
+      }
+    });
+  }
 
   @override
   Future<void> loadUrl(String url, [Map<String, String> headers]) async =>
@@ -158,9 +173,8 @@ class WebViewController implements WebViewService {
       _methodChannel.invokeMethod('loadUrl', {'url': 'about: blank'});
 
   @override
-  Future<void> findAllAsync(String pattern) {
-    // TODO: implement findAllAsync
-    throw UnimplementedError();
+  Future<int> findAllAsync(String pattern) async {
+    return _methodChannel.invokeMethod('findAllAsync', {'query': pattern});
   }
 
   @override
@@ -217,7 +231,8 @@ class WebViewController implements WebViewService {
   }
 
   @override
-  Future<void> loadDataWithBaseURL(String baseUrl, String data, {String mimeType, String encoding, String historyUrl}) {
+  Future<void> loadDataWithBaseURL(String baseUrl, String data,
+      {String mimeType, String encoding, String historyUrl}) {
     // TODO: implement loadDataWithBaseURL
     throw UnimplementedError();
   }
@@ -289,13 +304,34 @@ class WebViewController implements WebViewService {
   }
 
   @override
-  Future<bool> canGoBackOrForward(int steps) {
-    // TODO: implement canGoBackOrForward
-    throw UnimplementedError();
+  Future<bool> canGoBackOrForward(int steps) async {
+    final result =
+        _methodChannel.invokeMethod('canGoBackOrForward', {"steps": steps});
+    return result as bool;
   }
 
   @override
   void dispose() {
     _methodChannel = null;
   }
+
+  @override
+  Future<String> getHtmlContent() async {
+    final htmlContent = await evaluteJavascript(
+        "window.document.getElementsByTagName('html')[0].outerHTML");
+    return htmlContent as String;
+  }
+
+  @override
+  void onPageFinished() {
+    _methodChannel.invokeMethod("onPageFinished");
+  }
+
+  @override
+  Future<List<String>> getVisitedHistory() async {
+    final items = await _methodChannel.invokeListMethod<String>("getVisitedHistory");
+    print(items);
+    return null;
+  }
+
 }

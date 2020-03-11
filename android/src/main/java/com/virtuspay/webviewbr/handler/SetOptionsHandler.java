@@ -1,4 +1,6 @@
 package com.virtuspay.webviewbr.handler;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -22,6 +24,7 @@ public class SetOptionsHandler implements WebViewHandler {
         this.next = webViewHandler;
     }
 
+    @TargetApi(Build.VERSION_CODES.ECLAIR_MR1)
     @Override
     public void onMethodCall(MethodCall call, Result result) {
         if(call.method.equalsIgnoreCase("setOptions")){

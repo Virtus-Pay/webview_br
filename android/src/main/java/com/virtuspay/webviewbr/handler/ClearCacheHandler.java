@@ -9,11 +9,11 @@ import static io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import static io.flutter.plugin.common.MethodChannel.Result;
 
 
-class ClearCacheHandler implements WebViewHandler {
+public class ClearCacheHandler implements WebViewHandler {
     private WebViewHandler next;
     final private WebView webView;
 
-    ClearCacheHandler(WebView webView) {
+    public ClearCacheHandler(WebView webView) {
         this.webView = webView;
     }
 

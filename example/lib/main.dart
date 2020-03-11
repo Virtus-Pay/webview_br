@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:flutter/services.dart';
+
 import 'package:webviewbr/webviewbr.dart';
 
 void main() => runApp(const MyApp());
@@ -30,7 +29,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         resizeToAvoidBottomInset: false,
-        floatingActionButton: FloatingActionButton(onPressed: () {}),
+        floatingActionButton: FloatingActionButton(onPressed: () async{
+
+          //_webViewService.onPageFinished();
+       //  final list = await _webViewService.getVisitedHistory();
+        // print(list);
+        }),
         appBar: AppBar(title: const Text('Flutter TextView example')),
         body: WebViewBr(
          onWebViewCreated: (web) async {
@@ -42,8 +46,9 @@ class _MyAppState extends State<MyApp> {
                 domStorageEnabled: true
             ));
             await web.loadUrl(
-                "https://refactoring.guru/",
+                "https://hml.usevirtus.com.br/",
               );
+
           //  await Future.delayed(Duration(seconds: 15), () async {
            //   await web.goBack();
 

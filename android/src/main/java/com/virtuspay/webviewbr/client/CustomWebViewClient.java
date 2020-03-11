@@ -7,8 +7,19 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import  android.webkit.WebViewClient;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import io.flutter.plugin.common.MethodChannel;
+
 
 public class CustomWebViewClient extends WebViewClient {
+
+    private final MethodChannel methodChannel;
+
+    public CustomWebViewClient(MethodChannel methodChannel) {
+        this.methodChannel = methodChannel;
+    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -19,20 +30,26 @@ public class CustomWebViewClient extends WebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        Log.d("webview start loading",url);
+        methodChannel.invokeMethod("onPageStarted",url);
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        view.loadUrl("javascript:window.android.onUrlChange(window.location.href);");
+        methodChannel.invokeMethod("onPageFinished",url);
     };
 
-
+    @Override
+    public void onLoadResource(WebView view, String url) {
+        methodChannel.invokeMethod("onPageLoadResource",url);
+    }
 
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-        Log.d("webview error",description);
-        Log.d("webview error code",String.valueOf(errorCode));
+        final Map<String,Object> map = new HashMap<>();
+        map.put("errorCode",errorCode);
+        map.put("description",description);
+        map.put("failingUrl",failingUrl);
+        methodChannel.invokeMethod("onReceivedError",map);
     }
 
 }
