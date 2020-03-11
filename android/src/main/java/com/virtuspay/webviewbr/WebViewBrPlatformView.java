@@ -52,6 +52,7 @@ public class WebViewBrPlatformView implements PlatformView {
         this.webView = new WebView(context);
         webView.addJavascriptInterface(new JavaScriptInterface(), "android");
 
+
     }
 
     private void configureClients(){

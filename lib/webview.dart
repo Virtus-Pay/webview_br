@@ -21,9 +21,6 @@ class WebViewBr extends StatefulWidget {
 class _WebViewBrState extends State<WebViewBr> {
 
 
-
-
-
   @override
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android) {

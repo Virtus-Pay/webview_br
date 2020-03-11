@@ -22,29 +22,38 @@ public class CustomWebViewClient extends WebViewClient {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+    @Override //for APIs 24 and later
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request){
         view.loadUrl(request.getUrl().toString());
+        return true;
+    }
+    @Override //for APIs earlier than 24
+    public boolean shouldOverrideUrlLoading(WebView view, String url){
+        view.loadUrl(view.getUrl().toString());
         return true;
     }
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        super.onPageStarted(view, url, favicon);
         methodChannel.invokeMethod("onPageStarted",url);
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
+       super.onPageFinished(view,url);
         methodChannel.invokeMethod("onPageFinished",url);
     };
 
     @Override
     public void onLoadResource(WebView view, String url) {
+        super.onLoadResource(view,url);
         methodChannel.invokeMethod("onPageLoadResource",url);
     }
 
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+        super.onReceivedError(view, errorCode, description, failingUrl);
         final Map<String,Object> map = new HashMap<>();
         map.put("errorCode",errorCode);
         map.put("description",description);

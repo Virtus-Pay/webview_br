@@ -19,56 +19,62 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        floatingActionButton: FloatingActionButton(onPressed: () async{
-
-          //_webViewService.onPageFinished();
-       //  final list = await _webViewService.getVisitedHistory();
-        // print(list);
-        }),
-        appBar: AppBar(title: const Text('Flutter TextView example')),
-        body: WebViewBr(
-         onWebViewCreated: (web) async {
-           _webViewService = web;
-            await web.setOptions(const AndroidWebViewOptions(
-                javaScriptCanOpenWindowsAutomatically: true,
-                javascriptEnabled: true,
-                supportMultipleWindows: true,
-                domStorageEnabled: true
-            ));
-            await web.loadUrl(
+          resizeToAvoidBottomInset: false,
+          floatingActionButton: FloatingActionButton(onPressed: () async {
+            //_webViewService.onPageFinished();
+            //  final list = await _webViewService.getVisitedHistory();
+            // print(list);
+          }),
+          appBar: AppBar(
+            title: const Text('Flutter TextView example'),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    _webViewService.goBack();
+                  }),
+              IconButton(
+                  icon: Icon(Icons.arrow_forward_ios),
+                  onPressed: () {
+                    _webViewService.goForward();
+                  })
+            ],
+          ),
+          body: WebViewBr(
+            onWebViewCreated: (controller) async {
+              _webViewService = controller;
+              await controller.setOptions(const AndroidWebViewOptions(
+                  javaScriptCanOpenWindowsAutomatically: true,
+                  javascriptEnabled: true,
+                  supportMultipleWindows: true,
+                  domStorageEnabled: true));
+              await controller.loadUrl(
                 "https://hml.usevirtus.com.br/",
               );
 
-          //  await Future.delayed(Duration(seconds: 15), () async {
-           //   await web.goBack();
+              //  await Future.delayed(Duration(seconds: 15), () async {
+              //   await controller.goBack();
 
-              // await web.reload();
-              // final x = await web.evaluteJavascript('window.document.getElementsByTagName("html")[0].outerHTML');
+              // await controller.reload();
+              // final x = await controller.evaluteJavascript('window.document.getElementsByTagName("html")[0].outerHTML');
               // print(x);
-              //  final cango = await web.canGoBack();
+              //  final cango = await controller.canGoBack();
               //   print(cango);
 
-              //  final canfo = await web.canGoForward();
+              //  final canfo = await controller.canGoForward();
 
 //print(canfo);
 
+              //  await controller.goBack();
 
-              //  await web.goBack();
-
-              //  await web.goForward();
-          //  });
-          },
-        )
-    ),
+              //  await controller.goForward();
+              //  });
+            },
+          )),
     );
   }
 }
