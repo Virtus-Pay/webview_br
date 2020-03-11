@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:webviewbr/android_webview_options.dart';
 import 'package:webviewbr/disposable.dart';
-import 'dart:convert';
 
 abstract class WebViewService implements Disposable {
 

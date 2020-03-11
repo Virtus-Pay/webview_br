@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.virtuspay.webviewbr">
+<<<<<<< HEAD
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+=======
+>>>>>>> 6a7086f57887abf047d4d63feb81232deb6d4619
 </manifest>

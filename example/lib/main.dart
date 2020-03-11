@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:webviewbr/webviewbr.dart';
 
 void main() => runApp(const MyApp());
