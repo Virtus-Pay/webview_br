@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:webviewbr/android_webview_options.dart';
 import 'package:webviewbr/disposable.dart';
+import 'package:webviewbr/handler/onloadresource_handler.dart';
+import 'package:webviewbr/handler/onpagefinished_handler.dart';
+import 'package:webviewbr/handler/onpagestarted_handler.dart';
+import 'package:webviewbr/handler/onprogress_changed_handler.dart';
+import 'package:webviewbr/handler/onreceived_error_handler.dart';
+import 'package:webviewbr/handler/webview_handler.dart';
 
 abstract class WebViewService implements Disposable {
-
   Future<List<String>> getVisitedHistory();
-
-  void onPageFinished();
 
   Future<void> loadUrl(String url, [Map<String, String> headers]);
 
@@ -103,15 +106,37 @@ abstract class WebViewService implements Disposable {
 
 class WebViewController implements WebViewService {
   MethodChannel _methodChannel;
+  WebViewHandler _handler;
+  final void Function(String url) onPageStarted;
+  final void Function(String url) onPageFinished;
+  final void Function(int progress) onProgressChanged;
+  final void Function(String url) onLoadResource;
+  final void Function(int errorCode, String description, String failingUrl)
+      onReceiveError;
 
+  WebViewController(this._methodChannel,
+      {this.onProgressChanged,
+      this.onLoadResource,
+      this.onReceiveError,
+      this.onPageStarted,
+      this.onPageFinished}) {
+    _initializeCallBacks();
+  }
 
-  WebViewController(this._methodChannel){
+  _initializeCallBacks() {
+    this._handler = new OnPageFinishedHandler(onPageFinished);
+    final onPageStartedHandler = new OnPageStartedHandler(onPageStarted);
+    final onProgressChangedHandler =
+        new OnProgressChangedHandler(onProgressChanged);
+    final onLoadResourceHandler = new OnLoadResourceHandler(onLoadResource);
+    final onReceiveErrorHandler = new OnReceiveErrorHandler(onReceiveError);
 
-    _methodChannel.setMethodCallHandler((call) async {
-      if(call.method == "onPageFinished"){
-        print(call.arguments);
-      }
-    });
+    _handler.next = onPageStartedHandler;
+    onPageStartedHandler.next = onProgressChangedHandler;
+    onProgressChangedHandler.next = onLoadResourceHandler;
+    onLoadResourceHandler.next = onReceiveErrorHandler;
+
+    _methodChannel.setMethodCallHandler((call) async => _handler.execute(call));
   }
 
   @override
@@ -208,7 +233,8 @@ class WebViewController implements WebViewService {
 
   @override
   Future<bool> goBackOrForward(int steps) async {
-    throw UnimplementedError();
+    return _methodChannel
+        .invokeMethod<bool>('goBackOrForward', {'steps': steps});
   }
 
   @override
@@ -279,10 +305,7 @@ class WebViewController implements WebViewService {
   }
 
   @override
-  Future<void> stopLoading() {
-    // TODO: implement stopLoading
-    throw UnimplementedError();
-  }
+  Future<void> stopLoading() => _methodChannel.invokeMethod('stopLoading');
 
   @override
   Future<void> zoomBy(double zoomFactor) {
@@ -304,14 +327,8 @@ class WebViewController implements WebViewService {
 
   @override
   Future<bool> canGoBackOrForward(int steps) async {
-    final result =
-        _methodChannel.invokeMethod('canGoBackOrForward', {"steps": steps});
-    return result as bool;
-  }
-
-  @override
-  void dispose() {
-    _methodChannel = null;
+    return _methodChannel
+        .invokeMethod<bool>('canGoBackOrForward', {"steps": steps});
   }
 
   @override
@@ -322,15 +339,12 @@ class WebViewController implements WebViewService {
   }
 
   @override
-  void onPageFinished() {
-    _methodChannel.invokeMethod("onPageFinished");
+  Future<List<String>> getVisitedHistory() async {
+    return _methodChannel.invokeListMethod<String>("getVisitedHistory");
   }
 
   @override
-  Future<List<String>> getVisitedHistory() async {
-    final items = await _methodChannel.invokeListMethod<String>("getVisitedHistory");
-    print(items);
-    return null;
+  void dispose() {
+    _methodChannel = null;
   }
-
 }

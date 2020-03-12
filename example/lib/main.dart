@@ -15,6 +15,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+
     _webViewService.dispose();
     super.dispose();
   }
@@ -45,6 +46,21 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           body: WebViewBr(
+            onLoadResource: (url){
+              print("LOADED");
+            },
+            onProgressChanged: (int progress){
+              print(" PROGRESS $progress");
+            },
+            onReceiveError: (errorCode,description,failingUrl){
+              print("ERROR");
+            },
+            onPageFinished: (e){
+              print("FINISHED");
+            },
+            onPageStarted: (e){
+              print("STARTED");
+            },
             onWebViewCreated: (controller) async {
               _webViewService = controller;
               await controller.setOptions(const AndroidWebViewOptions(

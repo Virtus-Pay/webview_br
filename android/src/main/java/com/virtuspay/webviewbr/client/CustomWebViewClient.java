@@ -29,7 +29,7 @@ public class CustomWebViewClient extends WebViewClient {
     }
     @Override //for APIs earlier than 24
     public boolean shouldOverrideUrlLoading(WebView view, String url){
-        view.loadUrl(view.getUrl().toString());
+        view.loadUrl(view.getUrl());
         return true;
     }
 
@@ -48,7 +48,7 @@ public class CustomWebViewClient extends WebViewClient {
     @Override
     public void onLoadResource(WebView view, String url) {
         super.onLoadResource(view,url);
-        methodChannel.invokeMethod("onPageLoadResource",url);
+        methodChannel.invokeMethod("onLoadResource",url);
     }
 
     @Override
