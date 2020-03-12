@@ -10,11 +10,10 @@ class OnLoadResourceHandler implements WebViewHandler {
   @override
   void execute(MethodCall methodCall) {
     if (methodCall.method == "onLoadResource") {
+      if(onLoadResource == null) return;
       onLoadResource(methodCall.arguments as String);
     } else if (_next != null) {
       _next.execute(methodCall);
-    } else {
-      throw UnimplementedError("This call is not implemented");
     }
   }
 

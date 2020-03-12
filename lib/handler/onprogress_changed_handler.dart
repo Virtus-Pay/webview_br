@@ -10,11 +10,10 @@ class OnProgressChangedHandler implements WebViewHandler {
   @override
   void execute(MethodCall methodCall) {
     if (methodCall.method == "onProgressChanged") {
+      if(onProgressChanged == null) return;
       onProgressChanged(methodCall.arguments as int);
     } else if (_next != null) {
       _next.execute(methodCall);
-    } else {
-      throw UnimplementedError("This call is not implemented");
     }
   }
 

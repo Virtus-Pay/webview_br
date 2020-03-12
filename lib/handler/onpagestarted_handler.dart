@@ -11,11 +11,10 @@ class OnPageStartedHandler implements WebViewHandler{
   @override
   void execute(MethodCall methodCall) {
     if (methodCall.method == "onPageStarted") {
+      if(onPageStarted == null) return;
       onPageStarted(methodCall.arguments as String);
     } else if (_next != null) {
       _next.execute(methodCall);
-    } else {
-      throw UnimplementedError("This call is not implemented");
     }
   }
 
