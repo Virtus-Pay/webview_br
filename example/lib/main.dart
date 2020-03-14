@@ -15,7 +15,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-
     _webViewService.dispose();
     super.dispose();
   }
@@ -24,11 +23,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          resizeToAvoidBottomInset: false,
+          //   resizeToAvoidBottomInset: false,
           floatingActionButton: FloatingActionButton(onPressed: () async {
             //_webViewService.onPageFinished();
-            //  final list = await _webViewService.getVisitedHistory();
-            // print(list);
+             final list = await _webViewService.getVisitedHistory();
+             print(list);
           }),
           appBar: AppBar(
             title: const Text('Flutter TextView example'),
@@ -46,30 +45,36 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           body: WebViewBr(
-            onLoadResource: (url){
+            onLoadResource: (url) {
               print("LOADED");
             },
-            onProgressChanged: (int progress){
+            onProgressChanged: (int progress) {
               print(" PROGRESS $progress");
             },
-            onReceiveError: (errorCode,description,failingUrl){
+            onReceiveError: (errorCode, description, failingUrl) {
               print("ERROR");
             },
-            onPageFinished: (e){
+            onPageFinished: (e) {
               print("FINISHED");
             },
-            onPageStarted: (e){
+            onPageStarted: (e) {
               print("STARTED");
             },
             onWebViewCreated: (controller) async {
               _webViewService = controller;
               await controller.setOptions(const AndroidWebViewOptions(
                   javaScriptCanOpenWindowsAutomatically: true,
-                  javascriptEnabled: true,
+                  javaScriptEnabled: true,
                   supportMultipleWindows: true,
-                  domStorageEnabled: true));
+                  domStorageEnabled: true,
+                  allowContentAccess: true,
+                  allowFileAccess: true,
+                  allowFileAccessFromFileURLs: true,
+                  allowUniversalAccessFromFileURLs: true));
               await controller.loadUrl(
-                "https://hml.usevirtus.com.br/",
+              "https://www.facebook.com/"
+                //"https://imageshack.us/login",
+                "www.google.com"
               );
 
               //  await Future.delayed(Duration(seconds: 15), () async {

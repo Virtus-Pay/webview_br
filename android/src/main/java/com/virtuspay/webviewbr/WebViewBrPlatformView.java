@@ -26,6 +26,7 @@ import com.virtuspay.webviewbr.handler.LoadUrlHandler;
 import com.virtuspay.webviewbr.handler.ReloadHandler;
 import com.virtuspay.webviewbr.handler.SetOptionsHandler;
 import com.virtuspay.webviewbr.handler.WebViewHandler;
+import com.virtuspay.webviewbr.listener.WebViewBrActivityResultListener;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
@@ -39,31 +40,42 @@ public class WebViewBrPlatformView implements PlatformView {
     private WebViewClient webViewClient;
     private MethodChannel methodChannel;
     private WebViewHandler webViewHandler;
+    private final Registrar registrar;
 
-    public WebViewBrPlatformView(Registrar registrar, int id) {
-        initalizeWebView(registrar.activity());
-        configureHandlers();
-        initializeChannel(registrar.messenger(),id);
+    public WebViewBrPlatformView( Registrar registrar, int id) {
+        this.registrar = registrar;
+
+            initalizeWebView(registrar.activity());
+            initializeChannel(registrar.messenger(),id);
         configureClients();
+        configureHandlers();
+        setMethodCallHandler();
+
+        registrar.addActivityResultListener(new WebViewBrActivityResultListener((CustomChromeClient) webChromeClient));
+    }
+
+    private void initializeResultHandlers(){
+
     }
 
     @SuppressLint("AddJavascriptInterface")
     private void initalizeWebView(Context context){
         this.webView = new WebView(context);
         webView.addJavascriptInterface(new JavaScriptInterface(), "android");
-
-
     }
 
     private void configureClients(){
         this.webViewClient = new CustomWebViewClient(methodChannel);
-        this.webChromeClient = new CustomChromeClient(methodChannel);
+        this.webChromeClient = new CustomChromeClient(registrar, methodChannel);
         webView.setWebViewClient(webViewClient);
         webView.setWebChromeClient(webChromeClient);
     }
 
     private void initializeChannel(BinaryMessenger messenger,int id){
         this.methodChannel = new MethodChannel(messenger, "plugins.flutterplatform/webviewbr_" + id);
+    }
+
+    private  void setMethodCallHandler(){
         methodChannel.setMethodCallHandler(webViewHandler);
     }
 

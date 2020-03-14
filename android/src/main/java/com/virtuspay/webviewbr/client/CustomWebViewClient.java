@@ -21,14 +21,21 @@ public class CustomWebViewClient extends WebViewClient {
         this.methodChannel = methodChannel;
     }
 
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override //for APIs 24 and later
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request){
+        if(request.getUrl().toString().contains("faceboook")){
+            return false;
+        }
         view.loadUrl(request.getUrl().toString());
         return true;
     }
     @Override //for APIs earlier than 24
     public boolean shouldOverrideUrlLoading(WebView view, String url){
+        if(url.contains("faceboook")){
+            return true;
+        }
         view.loadUrl(view.getUrl());
         return true;
     }

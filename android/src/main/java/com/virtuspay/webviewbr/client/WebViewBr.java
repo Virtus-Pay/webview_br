@@ -28,6 +28,5 @@ public class WebViewBr extends WebView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        
     }
 }

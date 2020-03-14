@@ -148,11 +148,11 @@ class WebViewController implements WebViewService {
       _methodChannel.invokeMethod('setOptions', {"options": options.toJson()});
 
   @override
-  Future<bool> canGoBack() => _methodChannel.invokeMethod('canGoBack');
+  Future<bool> canGoBack() => _methodChannel.invokeMethod<bool>('canGoBack');
 
   //VER GO FORWARD COM STEPS
   @override
-  Future<bool> canGoForward() => _methodChannel.invokeMethod('canGoForward');
+  Future<bool> canGoForward() => _methodChannel.invokeMethod<bool>('canGoForward');
 
   @override
   Future<void> goBack() => _methodChannel.invokeMethod('goBack');
@@ -169,13 +169,13 @@ class WebViewController implements WebViewService {
       .invokeMethod('evaluateJavascript', {"code": javascriptCode});
 
   @override
-  Future<String> getUrl() => _methodChannel.invokeMethod('getUrl');
+  Future<String> getUrl() => _methodChannel.invokeMethod<String>('getUrl');
 
   @override
   Future<void> reload() => _methodChannel.invokeMethod('reload');
 
   @override
-  Future<bool> hasFocus() => _methodChannel.invokeMethod('hasFocus');
+  Future<bool> hasFocus() => _methodChannel.invokeMethod<bool>('hasFocus');
 
   @override
   Future<void> clearFocus() => _methodChannel.invokeMethod('clearFocus');
