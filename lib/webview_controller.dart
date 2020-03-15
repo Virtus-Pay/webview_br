@@ -125,7 +125,13 @@ class WebViewController implements WebViewService {
 
   _initializeCallBacks() {
     this._handler = new OnPageFinishedHandler(onPageFinished);
-    final onPageStartedHandler = new OnPageStartedHandler(onPageStarted);
+    final onPageStartedHandler = new OnPageStartedHandler((String url) async {
+      onPageStarted(url);
+      evaluteJavascript('''
+        window.addEventListener("focusout",(event) => {
+ Android.OnUnFocusListener(String(!(document.activeElement instanceof HTMLInputElement)));
+  }); ''');
+    });
     final onProgressChangedHandler =
         new OnProgressChangedHandler(onProgressChanged);
     final onLoadResourceHandler = new OnLoadResourceHandler(onLoadResource);
@@ -152,7 +158,8 @@ class WebViewController implements WebViewService {
 
   //VER GO FORWARD COM STEPS
   @override
-  Future<bool> canGoForward() => _methodChannel.invokeMethod<bool>('canGoForward');
+  Future<bool> canGoForward() =>
+      _methodChannel.invokeMethod<bool>('canGoForward');
 
   @override
   Future<void> goBack() => _methodChannel.invokeMethod('goBack');

@@ -12,6 +12,7 @@ class OnPageFinishedHandler implements WebViewHandler {
   void execute(MethodCall methodCall) {
     if (methodCall.method == "onPageFinished") {
       if(onPageFinished == null) return;
+    
       onPageFinished(methodCall.arguments as String);
     } else if (_next != null) {
       _next.execute(methodCall);

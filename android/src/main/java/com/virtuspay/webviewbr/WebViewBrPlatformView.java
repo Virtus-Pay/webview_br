@@ -52,6 +52,7 @@ public class WebViewBrPlatformView implements PlatformView {
         setMethodCallHandler();
 
         registrar.addActivityResultListener(new WebViewBrActivityResultListener((CustomChromeClient) webChromeClient));
+
     }
 
     private void initializeResultHandlers(){
@@ -61,7 +62,7 @@ public class WebViewBrPlatformView implements PlatformView {
     @SuppressLint("AddJavascriptInterface")
     private void initalizeWebView(Context context){
         this.webView = new WebView(context);
-        webView.addJavascriptInterface(new JavaScriptInterface(), "android");
+        webView.addJavascriptInterface(new JavaScriptInterface(registrar), "Android");
     }
 
     private void configureClients(){

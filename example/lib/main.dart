@@ -22,6 +22,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+    
       home: Scaffold(
           //   resizeToAvoidBottomInset: false,
           floatingActionButton: FloatingActionButton(onPressed: () async {
@@ -54,8 +55,10 @@ class _MyAppState extends State<MyApp> {
             onReceiveError: (errorCode, description, failingUrl) {
               print("ERROR");
             },
-            onPageFinished: (e) {
-              print("FINISHED");
+            onPageFinished: (e) async{
+
+             print("FINISHED");
+
             },
             onPageStarted: (e) {
               print("STARTED");
@@ -73,8 +76,6 @@ class _MyAppState extends State<MyApp> {
                   allowUniversalAccessFromFileURLs: true));
               await controller.loadUrl(
               "https://www.facebook.com/"
-                //"https://imageshack.us/login",
-                "www.google.com"
               );
 
               //  await Future.delayed(Duration(seconds: 15), () async {
