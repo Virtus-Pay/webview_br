@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:webviewbr/webviewbr.dart';
 
@@ -12,8 +14,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   WebViewService _webViewService;
+  double _progress = 0;
 
-  @override
   void dispose() {
     _webViewService.dispose();
     super.dispose();
@@ -22,16 +24,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-    
       home: Scaffold(
-          //   resizeToAvoidBottomInset: false,
-          floatingActionButton: FloatingActionButton(onPressed: () async {
-            //_webViewService.onPageFinished();
-             final list = await _webViewService.getVisitedHistory();
-             print(list);
-          }),
           appBar: AppBar(
-            title: const Text('Flutter TextView example'),
+            title: const Text('Flutter WebViewBr example'),
             actions: <Widget>[
               IconButton(
                   icon: Icon(Icons.arrow_back_ios),
@@ -45,57 +40,50 @@ class _MyAppState extends State<MyApp> {
                   })
             ],
           ),
-          body: WebViewBr(
-            onLoadResource: (url) {
-              print("LOADED");
-            },
-            onProgressChanged: (int progress) {
-              print(" PROGRESS $progress");
-            },
-            onReceiveError: (errorCode, description, failingUrl) {
-              print("ERROR");
-            },
-            onPageFinished: (e) async{
-
-             print("FINISHED");
-
-            },
-            onPageStarted: (e) {
-              print("STARTED");
-            },
-            onWebViewCreated: (controller) async {
-              _webViewService = controller;
-              await controller.setOptions(const AndroidWebViewOptions(
-                  javaScriptCanOpenWindowsAutomatically: true,
-                  javaScriptEnabled: true,
-                  supportMultipleWindows: true,
-                  domStorageEnabled: true,
-                  allowContentAccess: true,
-                  allowFileAccess: true,
-                  allowFileAccessFromFileURLs: true,
-                  allowUniversalAccessFromFileURLs: true));
-              await controller.loadUrl(
-              "https://www.facebook.com/"
-              );
-
-              //  await Future.delayed(Duration(seconds: 15), () async {
-              //   await controller.goBack();
-
-              // await controller.reload();
-              // final x = await controller.evaluteJavascript('window.document.getElementsByTagName("html")[0].outerHTML');
-              // print(x);
-              //  final cango = await controller.canGoBack();
-              //   print(cango);
-
-              //  final canfo = await controller.canGoForward();
-
-//print(canfo);
-
-              //  await controller.goBack();
-
-              //  await controller.goForward();
-              //  });
-            },
+          body: Column(
+            children: <Widget>[
+              if (_progress > 0.98)
+                Container()
+              else
+                LinearProgressIndicator(
+                  value: _progress,
+                ),
+              Expanded(
+                child: WebViewBr(
+                  onLoadResource: (url) {
+                    print("LOADED");
+                  },
+                  onProgressChanged: (int progress) {
+                    setState(() {
+                      _progress = progress / 100;
+                    });
+                    print(" PROGRESS $progress");
+                  },
+                  onReceiveError: (errorCode, description, failingUrl) {
+                    print("ERROR");
+                  },
+                  onPageFinished: (e) async {
+                    print("FINISHED");
+                  },
+                  onPageStarted: (e) {
+                    print("STARTED");
+                  },
+                  onWebViewCreated: (controller) async {
+                    _webViewService = controller;
+                    await controller.setOptions(const AndroidWebViewOptions(
+                        javaScriptCanOpenWindowsAutomatically: true,
+                        javaScriptEnabled: true,
+                        supportMultipleWindows: true,
+                        domStorageEnabled: true,
+                        allowContentAccess: true,
+                        allowFileAccess: true,
+                        allowFileAccessFromFileURLs: true,
+                        allowUniversalAccessFromFileURLs: true));
+                    await controller.loadUrl("https://www.facebook.com/");
+                  },
+                ),
+              ),
+            ],
           )),
     );
   }
