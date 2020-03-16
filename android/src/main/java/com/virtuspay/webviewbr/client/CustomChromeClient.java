@@ -45,12 +45,12 @@ public class CustomChromeClient extends WebChromeClient {
 
         Intent intent = fileChooserParams.createIntent();
 
-        Intent i = new Intent( Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+       // Intent i = new Intent( Intent.ACTION_PICK,
+       //         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
 
         this.registrar.activity()
-                .startActivityForResult(Intent.createChooser(i,"Share file"),101);
+                .startActivityForResult(Intent.createChooser(intent,"Share file"),101);
         return true;
     }
 
