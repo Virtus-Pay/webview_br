@@ -126,7 +126,9 @@ class WebViewController implements WebViewService {
   _initializeCallBacks() {
     this._handler = new OnPageFinishedHandler(onPageFinished);
     final onPageStartedHandler = new OnPageStartedHandler((String url) async {
-      onPageStarted(url);
+      if (onPageStarted != null) {
+        onPageStarted(url);
+      }
       evaluteJavascript('''
         window.addEventListener("focusout",(event) => {
  Android.OnUnFocusListener(String(!(document.activeElement instanceof HTMLInputElement)));

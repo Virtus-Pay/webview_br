@@ -26,9 +26,11 @@ class JavaScriptInterface {
             public void run() {
                 if(focus.equalsIgnoreCase("true")){
                     InputMethodManager imm = (InputMethodManager) registrar.context().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(registrar.activity().getWindow().getDecorView().getApplicationWindowToken(), 0);
-                    registrar.activity().getWindow().setSoftInputMode(
-                            WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                    if (imm != null) {
+                        imm.hideSoftInputFromWindow(registrar.activity().getWindow().getDecorView().getApplicationWindowToken(), 0);
+                        registrar.activity().getWindow().setSoftInputMode(
+                                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                    }
                 }
             }
         });

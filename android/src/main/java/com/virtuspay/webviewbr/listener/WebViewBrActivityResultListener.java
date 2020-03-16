@@ -20,11 +20,11 @@ public class WebViewBrActivityResultListener implements PluginRegistry.ActivityR
     @TargetApi(Build.VERSION_CODES.ECLAIR_MR1)
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
-        Log.d("OLHA ISSOOOOOOOOOOO",intent.getDataString());
-        if(requestCode == 101){
+        if(intent.getDataString() != null && requestCode == 101){
             customChromeClient.receiveUploadUris(new Uri[]{Uri.parse(intent.getDataString())});
             return true;
         }
+    
         return false;
     }
 }
