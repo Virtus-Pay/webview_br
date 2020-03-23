@@ -2,6 +2,8 @@ package com.virtuspay.webviewbr;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -30,6 +32,7 @@ import com.virtuspay.webviewbr.listener.WebViewBrActivityResultListener;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.platform.PlatformView;
 
@@ -45,19 +48,15 @@ public class WebViewBrPlatformView implements PlatformView {
     public WebViewBrPlatformView( Registrar registrar, int id) {
         this.registrar = registrar;
 
-            initalizeWebView(registrar.activity());
-            initializeChannel(registrar.messenger(),id);
+        initalizeWebView(registrar.activity());
+        initializeChannel(registrar.messenger(),id);
         configureClients();
+        configureActivityResultListener();
         configureHandlers();
         setMethodCallHandler();
 
-        registrar.addActivityResultListener(new WebViewBrActivityResultListener((CustomChromeClient) webChromeClient));
-
     }
 
-    private void initializeResultHandlers(){
-
-    }
 
     @SuppressLint("AddJavascriptInterface")
     private void initalizeWebView(Context context){
@@ -70,6 +69,12 @@ public class WebViewBrPlatformView implements PlatformView {
         this.webChromeClient = new CustomChromeClient(registrar, methodChannel);
         webView.setWebViewClient(webViewClient);
         webView.setWebChromeClient(webChromeClient);
+
+    }
+
+    private void  configureActivityResultListener(){
+        registrar.addActivityResultListener( new WebViewBrActivityResultListener((CustomChromeClient) webChromeClient));
+        registrar.addRequestPermissionsResultListener((CustomChromeClient) webChromeClient);
     }
 
     private void initializeChannel(BinaryMessenger messenger,int id){
@@ -137,6 +142,7 @@ public class WebViewBrPlatformView implements PlatformView {
 
     @Override
     public void dispose() {
+        Log.d("DISPOSE WEBVIEW","aaaaa");
         this.webView.destroy();
         this.webView = null;
         this.methodChannel.setMethodCallHandler(null);
