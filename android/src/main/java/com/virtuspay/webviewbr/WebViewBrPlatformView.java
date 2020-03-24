@@ -2,7 +2,6 @@ package com.virtuspay.webviewbr;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -32,7 +31,6 @@ import com.virtuspay.webviewbr.listener.WebViewBrActivityResultListener;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.platform.PlatformView;
 
@@ -50,6 +48,7 @@ public class WebViewBrPlatformView implements PlatformView {
 
         initalizeWebView(registrar.activity());
         initializeChannel(registrar.messenger(),id);
+        initializeJavascriptInterface();
         configureClients();
         configureActivityResultListener();
         configureHandlers();
@@ -61,7 +60,6 @@ public class WebViewBrPlatformView implements PlatformView {
     @SuppressLint("AddJavascriptInterface")
     private void initalizeWebView(Context context){
         this.webView = new WebView(context);
-        webView.addJavascriptInterface(new JavaScriptInterface(registrar), "Android");
     }
 
     private void configureClients(){
@@ -83,6 +81,10 @@ public class WebViewBrPlatformView implements PlatformView {
 
     private  void setMethodCallHandler(){
         methodChannel.setMethodCallHandler(webViewHandler);
+    }
+
+    private void initializeJavascriptInterface(){
+        webView.addJavascriptInterface(new JavaScriptInterface(registrar, methodChannel), "Android");
     }
 
     private void configureHandlers(){

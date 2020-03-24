@@ -11,6 +11,7 @@ class WebViewBr extends StatefulWidget {
   final Function(String url) onPageFinished;
   final void Function(int progress) onProgressChanged;
   final void Function(String url) onLoadResource;
+  final void Function(String readyState) onReadyStateChanged;
   final void Function(int errorCode, String description, String failingUrl)
       onReceiveError;
 
@@ -22,6 +23,7 @@ class WebViewBr extends StatefulWidget {
     this.onProgressChanged,
     this.onLoadResource,
     this.onReceiveError,
+    this.onReadyStateChanged,
   }) : super(key: key);
 
   final WebViewCreatedCallback onWebViewCreated;
@@ -53,6 +55,8 @@ class _WebViewBrState extends State<WebViewBr> {
         onPageFinished: widget.onPageFinished,
         onLoadResource: widget.onLoadResource,
         onProgressChanged: widget.onProgressChanged,
-        onReceiveError: widget.onReceiveError));
+        onReceiveError: widget.onReceiveError,
+      onReadyStateChanged:widget.onReadyStateChanged,
+    ));
   }
 }

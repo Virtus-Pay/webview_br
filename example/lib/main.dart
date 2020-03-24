@@ -70,6 +70,9 @@ class _WebViewBrExampleState extends State<WebViewBrExample> {
                 onPageStarted: (e) {
                   print("STARTED");
                 },
+                onReadyStateChanged: (e){
+                  print(e);
+                },
                 onWebViewCreated: (controller) async {
                   _webViewService = controller;
                   await controller.setOptions(const AndroidWebViewOptions(
@@ -84,8 +87,8 @@ class _WebViewBrExampleState extends State<WebViewBrExample> {
                       databaseEnabled: true,
                       allowFileAccessFromFileURLs: true,
                       allowUniversalAccessFromFileURLs: true));
-
-                  await controller.loadUrl("https://www.google.com/maps");
+await controller.loadUrl("https://www.w3schools.com/");
+                 // await controller.loadUrl("https://hml.usevirtus.com.br/taker/order/2fa53aa6-3b5b-45bf-a149-84c7c7ea9e59/file");
                 },
               ),
             ),

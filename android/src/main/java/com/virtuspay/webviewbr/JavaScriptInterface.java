@@ -5,17 +5,19 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
-class JavaScriptInterface {
+public class JavaScriptInterface {
     private final PluginRegistry.Registrar registrar;
+    private final MethodChannel methodChannel;
 
-    JavaScriptInterface(PluginRegistry.Registrar registrar) {
+    JavaScriptInterface(PluginRegistry.Registrar registrar, MethodChannel methodChannel) {
         this.registrar = registrar;
+        this.methodChannel = methodChannel;
     }
 
     @TargetApi(Build.VERSION_CODES.CUPCAKE)
@@ -35,6 +37,19 @@ class JavaScriptInterface {
             }
         });
     }
+
+    @TargetApi(Build.VERSION_CODES.CUPCAKE)
+    @android.webkit.JavascriptInterface
+    public void OnReadyStateChanged(final String fullyLoaded){
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                 methodChannel.invokeMethod("onReadyStateChanged",fullyLoaded);
+            }
+        });
+
     }
+
+}
 
 

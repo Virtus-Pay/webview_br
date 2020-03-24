@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:webviewbr/android_webview_options.dart';
 import 'package:webviewbr/disposable.dart';
+import 'package:webviewbr/handler/onfullyload_handler.dart';
 import 'package:webviewbr/handler/onloadresource_handler.dart';
 import 'package:webviewbr/handler/onpagefinished_handler.dart';
 import 'package:webviewbr/handler/onpagestarted_handler.dart';
@@ -113,14 +114,28 @@ class WebViewController implements WebViewService {
   final void Function(String url) onLoadResource;
   final void Function(int errorCode, String description, String failingUrl)
       onReceiveError;
+  final void Function(String readyState) onReadyStateChanged;
 
   WebViewController(this._methodChannel,
       {this.onProgressChanged,
       this.onLoadResource,
       this.onReceiveError,
       this.onPageStarted,
-      this.onPageFinished}) {
+      this.onPageFinished,
+      this.onReadyStateChanged}) {
     _initializeCallBacks();
+  }
+
+  void _addOnFullyLoadListener() {
+    evaluteJavascript('''
+       window.document.addEventListener("readystatechange", (event) => { Android.OnReadyStateChanged(window.document.readyState); }); ''');
+  }
+
+  void _addOnFocusOutListener() {
+    evaluteJavascript('''
+        window.addEventListener("focusout",(event) => {
+ Android.OnUnFocusListener(String(!(document.activeElement instanceof HTMLInputElement)));
+  }); ''');
   }
 
   _initializeCallBacks() {
@@ -129,22 +144,26 @@ class WebViewController implements WebViewService {
       if (onPageStarted != null) {
         onPageStarted(url);
       }
-      evaluteJavascript('''
-        window.addEventListener("focusout",(event) => {
- Android.OnUnFocusListener(String(!(document.activeElement instanceof HTMLInputElement)));
-  }); ''');
+      _addOnFullyLoadListener();
+      _addOnFocusOutListener();
     });
     final onProgressChangedHandler =
         new OnProgressChangedHandler(onProgressChanged);
     final onLoadResourceHandler = new OnLoadResourceHandler(onLoadResource);
     final onReceiveErrorHandler = new OnReceiveErrorHandler(onReceiveError);
+    final onReadyStateChangedHandler =
+        new OnReadyStateChangedHandler(onReadyStateChanged);
 
     _handler.next = onPageStartedHandler;
     onPageStartedHandler.next = onProgressChangedHandler;
     onProgressChangedHandler.next = onLoadResourceHandler;
     onLoadResourceHandler.next = onReceiveErrorHandler;
+    onReceiveErrorHandler.next = onReadyStateChangedHandler;
 
-    _methodChannel.setMethodCallHandler((call) async => _handler.execute(call));
+    _methodChannel.setMethodCallHandler((call) async {
+      print(call.method);
+      _handler.execute(call);
+    });
   }
 
   @override
