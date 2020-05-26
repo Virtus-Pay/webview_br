@@ -60,7 +60,7 @@ public class SetOptionsHandler implements WebViewHandler {
                 webSettings.setSavePassword((boolean) options.get("savePassword"));
                 // support api level 14
                 // default value is 100
-                webSettings.setTextZoom((int) options.get("textZoom"));
+               // webSettings.setTextZoom((int) options.get("textZoom"));
                 // support api level 7
                 // default value is 0, max value is 72
                 // complete zoom densitiy constants
@@ -100,16 +100,16 @@ public class SetOptionsHandler implements WebViewHandler {
 
                 // default value is 8
                 // values are beetwen 1 and 72
-                webSettings.setMinimumFontSize((int) options.get("minimumFontSize"));
+                //webSettings.setMinimumFontSize((int) options.get("minimumFontSize"));
                 // default value is 8
                 // values are beetwen 1 and 72
-                webSettings.setMinimumLogicalFontSize((int) options.get("minimumLogicalFontSize"));
+              //  webSettings.setMinimumLogicalFontSize((int) options.get("minimumLogicalFontSize"));
                 // default value is 16
                 // values are beetwen 1 and 72
-                webSettings.setDefaultFontSize((int) options.get("defaultFontSize"));
+               // webSettings.setDefaultFontSize((int) options.get("defaultFontSize"));
                 // default value is 16
                 // values are beetwen 1 and 72
-                webSettings.setDefaultFixedFontSize((int) options.get("defaultFixedFontSize"));
+               // webSettings.setDefaultFixedFontSize((int) options.get("defaultFixedFontSize"));
                 // default value is true
                 webSettings.setLoadsImagesAutomatically((boolean) options.get("loadsImagesAutomatically"));
                 // default value is false
